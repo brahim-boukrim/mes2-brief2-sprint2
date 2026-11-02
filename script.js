@@ -123,11 +123,10 @@ function modifierStatut(id) {
   for(let i=0;i<produits.length;i++){
       if(id==produits[i].id){
         if(produits[i].statut== "À acheter"){
-
           produits[i].statut="Acheté"
         }
         else{
-          produits[i].statut="Acheté"
+          produits[i].statut="À acheter"
         }
         sauvegarderProduits()
         afficherProduits(appliquerCriteres())
@@ -159,12 +158,19 @@ function appliquerCriteres() {
   
 
     const copy=[...produits.filter(elm => elm.nom.includes(champRecherche.value))]
-    const copy2= [...copy.filter(elm=>elm.statut==filtreStatut.value)]
+    const copy2= [...copy.filter(elm=>{
+      if(elm.statut==filtreStatut.value){
+        return elm
+      }
+      if(filtreStatut.value){
+        return elm
+      }
+    })]
     if(triPrix.value=="croissant"){
-      copy2.sort((a,b)=>a-b)
+      copy2.sort((a,b)=>a.prix-b.prix)
     }
-    if(triPrix.value=="croissant"){
-      copy2.sort((b,a)=>a-b)
+    if(triPrix.value=="decroissant"){
+      copy2.sort((b,a)=>a.prix-b.prix)
     }
     
   
@@ -194,12 +200,11 @@ function sauvegarderProduits() {
 }
 
 function chargerProduits() {
-  produits=JSON.parse(localStorage.getItem("data"))!=null ?JSON.parse(localStorage.getItem("data")) : produitsInitiaux
+  produits=JSON.parse(localStorage.getItem("data"))!=null ?JSON.parse(localStorage.getItem("data")) : [...produitsInitiaux]
   // TODO : récupérer la sauvegarde dans produits si elle existe.
   // En l'absence de sauvegarde, conserver les données initiales.
   // Une sauvegarde contenant [] doit rester une liste vide.
 }
-
 // Connexions fournies : compléter les fonctions appelées, sans les dupliquer.
 function actualiserAffichage() {
   afficherProduits(appliquerCriteres());
