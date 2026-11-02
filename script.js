@@ -120,36 +120,81 @@ function ajouterProduit(event) {
 // FONCTIONS À COMPLÉTER — aucune solution n'est fournie ci-dessous.
 
 function modifierStatut(id) {
+  for(let i=0;i<produits.length;i++){
+      if(id==produits[i].id){
+        if(produits[i].statut== "À acheter"){
+
+          produits[i].statut="Acheté"
+        }
+        else{
+          produits[i].statut="Acheté"
+        }
+        sauvegarderProduits()
+        afficherProduits(appliquerCriteres())
+      }
+    }
   // TODO : changer uniquement le statut du bon produit dans les deux sens.
   // Le nom, le prix et l'id ne changent pas.
   // Mettre à jour la sauvegarde et l'affichage selon les critères actifs.
 }
 
 function supprimerProduit(id) {
+  const conf=confirm("do you want to delete")
+  if(conf){
+    for(let i=0;i<produits.length;i++){
+      if(id==produits[i].id){
+        produits.splice(i,1)
+        sauvegarderProduits()
+        afficherProduits(appliquerCriteres())
+      }
+    }
+  }
   // TODO : demander confirmation et retirer uniquement le bon produit.
   // Mettre à jour la sauvegarde et l'affichage si la suppression est confirmée.
 }
 
 function appliquerCriteres() {
+  
+  
+  
+
+    const copy=[...produits.filter(elm => elm.nom.includes(champRecherche.value))]
+    const copy2= [...copy.filter(elm=>elm.statut==filtreStatut.value)]
+    if(triPrix.value=="croissant"){
+      copy2.sort((a,b)=>a-b)
+    }
+    if(triPrix.value=="croissant"){
+      copy2.sort((b,a)=>a-b)
+    }
+    
+  
+ 
+
   // TODO : combiner la recherche et le statut, puis appliquer triPrix.value.
   // Trier numériquement les résultats sur une copie, sans modifier produits.
   // Modes : initial, croissant et decroissant.
   // Retourner les résultats sans modifier le tableau complet produits.
   // Le retour ci-dessous affiche provisoirement toute la liste.
-  return produits;
+  return copy2
 }
 
 function reinitialiserCriteres() {
+  champRecherche.value=""
+  filtreStatut.value="tous"
+  triPrix.value="initial"
+  afficherProduits(produits)
   // TODO : vider la recherche, sélectionner tous les produits et l'ordre initial.
   // Actualiser l'affichage, sans modifier les produits ni leur sauvegarde.
 }
 
 function sauvegarderProduits() {
+  localStorage.setItem("data",JSON.stringify(produits))
   // TODO : sauvegarder le tableau complet produits dans localStorage.
   // Cette fonction est déjà appelée après un ajout.
 }
 
 function chargerProduits() {
+  produits=JSON.parse(localStorage.getItem("data"))!=null ?JSON.parse(localStorage.getItem("data")) : produitsInitiaux
   // TODO : récupérer la sauvegarde dans produits si elle existe.
   // En l'absence de sauvegarde, conserver les données initiales.
   // Une sauvegarde contenant [] doit rester une liste vide.
